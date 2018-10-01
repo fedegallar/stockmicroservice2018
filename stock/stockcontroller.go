@@ -1,37 +1,31 @@
 package stock
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/fedegallar/stockmicroservice2018/redisclient"
 )
-
-func GetStockByArticleId(c *gin.Context) {
+//GetStockByArticleID Devuelve el stock de un articulo.
+func GetStockByArticleID(c *gin.Context) {
 	articleid := c.Param("articleid")
-	c.JSON(200, gin.H{
-		articleid: "Stock de articulo encontrado",
-	})
+	fmt.Println(articleid)
+	quantity := redisclient.GetStock(c)
+		var result struct{
+			articleid string
+			quantity string
+		}
+		result.articleid = articleid
+		result.quantity = quantity
+		c.JSON(200,result)
 }
 
-func GetAllArticles(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Todos los articulos van por aqui!",
-	})
-}
-
-func AddNewArticle(c *gin.Context) {
-	articleid := c.Param("articleid")
-	quantity := c.Param("quantity")
-	c.JSON(200, gin.H{
-		"message":   "Article added succesfully",
-		"articleid": articleid,
-		"quantity":  quantity,
-	})
-}
-
+//AddStockToArticle Agrega stock a un árticulo. Si no existe, lo crea.
 func AddStockToArticle(c *gin.Context) {
 	articleid := c.Param("articleid")
 	quantity := c.Param("quantity")
+	result := redisclient.AddStock(articleid,quantity)
 	c.JSON(200, gin.H{
-		"message":   "Stock added succesfully",
+		"message":   result,
 		"articleid": articleid,
 		"quantity":  quantity,
 	})
