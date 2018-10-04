@@ -1,26 +1,18 @@
 package main
 
 import (
-	"time"
 	"github.com/fedegallar/stockmicroservice2018/stock"
-	"github.com/itsjamie/gin-cors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func main() {
+	f, _ := os.Create(time.currentTime.String()+".log")
+	gin.DefaultWriter = io.MultiWriter(f)
 	r := gin.Default()
-	r.Use(cors.Middleware(cors.Config{
-		Origins:         "*",
-		Methods:         "GET, PUT, POST, DELETE",
-		RequestHeaders:  "Origin, Authorization, Content-Type, Size",
-		ExposedHeaders:  "",
-		MaxAge:          50 * time.Second,
-		Credentials:     true,
-		ValidateHeaders: false,
-	}))
 	/**
 	*
-	* @api {get} /stock/:articleid Request stock from an specific article.
+	* @api {get} /api/v1/stock/:articleid Request stock from an specific article.
 	* @apiName GetStockFromAnArticle
 	* @apiGroup Stock Information
 	* @apiVersion  1.0.0
@@ -41,10 +33,10 @@ func main() {
 	* }
 	*
 	 */
-	r.GET("/stock/:articleid", stock.GetStockByArticleID)
+	r.GET("/api/v1/stock/:articleid", stock.GetStockByArticleID)
 	/**
 	*
-	* @api {POST} /stock Add stock to an article. If there is no article, it will create a new one.
+	* @api {POST} /api/v1/stock Add stock to an article. If there is no article, it will create a new one.
 	* @apiName AddStockToAnArticle
 	* @apiGroup Stock Operations
 	* @apiVersion  1.0.0
@@ -66,10 +58,10 @@ func main() {
 	* }
 	*
 	 */
-	r.POST("/stock", stock.AddStockToArticle)
+	r.POST("/api/v1/stock", stock.AddStockToArticle)
 	/**
 	*
-	* @api {DELETE} /stock/articleid Remove stock from an article.
+	* @api {DELETE} /api/v1/stock/articleid Remove stock from an article.
 	* @apiName RemoveStockFromArticle
 	* @apiGroup Stock Operations
 	* @apiVersion  1.0.0
@@ -91,7 +83,7 @@ func main() {
 	* }
 	*
 	 */
-	r.DELETE("/stock/:articleid", stock.RemoveStockFromArticle)
+	r.DELETE("api/v1/stock/:articleid", stock.RemoveStockFromArticle)
 	r.Static("apidoc/", "./apidoc")
 	r.Run(":3000")
 }

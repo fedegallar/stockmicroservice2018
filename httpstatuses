@@ -1,0 +1,5 @@
+200 OK.
+201 -> Creamos un recurso.
+3xx -> Redireccion.
+4xx -> Error del cliente
+5xx -> Error del servidor
