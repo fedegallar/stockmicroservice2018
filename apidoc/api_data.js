@@ -41,12 +41,16 @@ define({ "api": [
       "examples": [
         {
           "title": "Success:",
-          "content": "{\n    \"5b97cd224a1aa37430480268\" : 50,\n}",
+          "content": "{\n    \"<articleid>\" : <quantity>,\n}",
           "type": "json"
-        },
+        }
+      ]
+    },
+    "error": {
+      "examples": [
         {
-          "title": "Success-No-Content:",
-          "content": "{\n    \"Code\" : 204,\n\t  \"Description\" : \"No content\"\n}",
+          "title": "ArticleNotFound:",
+          "content": "\nHTTP/1.1 404 Not found\n{\"error\":\"Article not found\"}",
           "type": "json"
         }
       ]
@@ -56,8 +60,8 @@ define({ "api": [
   },
   {
     "type": "POST",
-    "url": "/api/v1/stock",
-    "title": "Add stock to an article. If there is no article, it will create a new one.",
+    "url": "/api/v1/stock/:articleid",
+    "title": "Add stock to an article.",
     "name": "AddStockToAnArticle",
     "group": "Stock_Operations",
     "version": "1.0.0",
@@ -82,95 +86,29 @@ define({ "api": [
       }
     },
     "success": {
-      "fields": {
-        "200": [
-          {
-            "group": "200",
-            "type": "String",
-            "optional": false,
-            "field": "articleid",
-            "description": "<p>Id of the article.</p>"
-          },
-          {
-            "group": "200",
-            "type": "Number",
-            "optional": false,
-            "field": "quantity",
-            "description": "<p>Number of articles aviable.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success:",
-          "content": "{\n    \"5b97cd224a1aa37430480268\" : 50,\n}",
-          "type": "json"
-        },
-        {
-          "title": "Success-No-Content:",
-          "content": "{\n    \"Code\" : 204,\n\t  \"Description\" : \"No content\"\n}",
+          "content": "HTTP/1.1 200 Success\n{\n    \"message\":\"Article added successfully!\"\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "./main.go",
-    "groupTitle": "Stock_Operations"
-  },
-  {
-    "type": "DELETE",
-    "url": "/api/v1/stock/articleid",
-    "title": "Remove stock from an article.",
-    "name": "RemoveStockFromArticle",
-    "group": "Stock_Operations",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "articleid",
-            "description": "<p>The unique id of an article.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "quantity",
-            "description": "<p>The quantity of an article.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "200": [
-          {
-            "group": "200",
-            "type": "String",
-            "optional": false,
-            "field": "articleid",
-            "description": "<p>Id of the article.</p>"
-          },
-          {
-            "group": "200",
-            "type": "Number",
-            "optional": false,
-            "field": "quantity",
-            "description": "<p>Number of articles aviable.</p>"
-          }
-        ]
-      },
+    "error": {
       "examples": [
         {
-          "title": "Success:",
-          "content": "{\n    \"5b97cd224a1aa37430480268\" : 50,\n}",
+          "title": "BadRequest:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n\t  \"error\" : \"Parameters needed\"\n}",
           "type": "json"
         },
         {
-          "title": "Success-No-Content:",
-          "content": "{\n    \"Code\" : 204,\n\t  \"Description\" : \"No content\"\n}",
+          "title": "NotAutorized:",
+          "content": "HTTP/1.1 401 Not Autorized\n{\n\t  \"error\" : \"Not Autorized\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "ArticleNotFound:",
+          "content": "HTTP/1.1 404 Not Found\n{\n\t  \"error\" : \"Article not found\"\n}",
           "type": "json"
         }
       ]

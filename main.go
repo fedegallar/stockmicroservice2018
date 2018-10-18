@@ -3,12 +3,9 @@ package main
 import (
 	"github.com/fedegallar/stockmicroservice2018/stock"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func main() {
-	f, _ := os.Create(time.currentTime.String()+".log")
-	gin.DefaultWriter = io.MultiWriter(f)
 	r := gin.Default()
 	/**
 	*
@@ -24,19 +21,20 @@ func main() {
 	*
 	* @apiSuccessExample {json} Success:
 	* {
-	*     "5b97cd224a1aa37430480268" : 50,
+	*     "<articleid>" : <quantity>,
 	* }
-	* @apiSuccessExample {json} Success-No-Content:
-	* {
-	*     "Code" : 204,
-	*	  "Description" : "No content"
-	* }
+	*
+	* @apiErrorExample ArticleNotFound:
+	*
+	* HTTP/1.1 404 Not found
+	* {"error":"Article not found"}
+	*
 	*
 	 */
 	r.GET("/api/v1/stock/:articleid", stock.GetStockByArticleID)
 	/**
 	*
-	* @api {POST} /api/v1/stock Add stock to an article. If there is no article, it will create a new one.
+	* @api {POST} /api/v1/stock/:articleid Add stock to an article.
 	* @apiName AddStockToAnArticle
 	* @apiGroup Stock Operations
 	* @apiVersion  1.0.0
@@ -44,46 +42,38 @@ func main() {
 	* @apiParam {String} articleid The unique id of an article.
 	* @apiParam {Number} quantity The quantity of an article.
 	*
-	* @apiSuccess (200) {String} articleid Id of the article.
-	* @apiSuccess (200) {Number} quantity Number of articles aviable.
 	*
 	* @apiSuccessExample {json} Success:
+	* HTTP/1.1 200 Success
 	* {
-	*     "5b97cd224a1aa37430480268" : 50,
+	*     "message":"Article added successfully!"
 	* }
-	* @apiSuccessExample {json} Success-No-Content:
+	* @apiErrorExample {json} BadRequest:
+	* HTTP/1.1 400 Bad Request
 	* {
-	*     "Code" : 204,
-	*	  "Description" : "No content"
+	*	  "error" : "Parameters needed"
+	* }
+	*
+	* @apiErrorExample {json} NotAutorized:
+	* HTTP/1.1 401 Not Autorized
+	* {
+	*	  "error" : "Not Autorized"
+	* }
+	*
+	* @apiErrorExample {json} ArticleNotFound:
+	* HTTP/1.1 404 Not Found
+	* {
+	*	  "error" : "Article not found"
 	* }
 	*
 	 */
-	r.POST("/api/v1/stock", stock.AddStockToArticle)
-	/**
-	*
-	* @api {DELETE} /api/v1/stock/articleid Remove stock from an article.
-	* @apiName RemoveStockFromArticle
-	* @apiGroup Stock Operations
-	* @apiVersion  1.0.0
-	*
-	* @apiParam {String} articleid The unique id of an article.
-	* @apiParam {Number} quantity The quantity of an article.
-	*
-	* @apiSuccess (200) {String} articleid Id of the article.
-	* @apiSuccess (200) {Number} quantity Number of articles aviable.
-	*
-	* @apiSuccessExample {json} Success:
-	* {
-	*     "5b97cd224a1aa37430480268" : 50,
-	* }
-	* @apiSuccessExample {json} Success-No-Content:
-	* {
-	*     "Code" : 204,
-	*	  "Description" : "No content"
-	* }
-	*
-	 */
-	r.DELETE("api/v1/stock/:articleid", stock.RemoveStockFromArticle)
+	r.POST("/api/v1/stock/:articleid", stock.AddStockToArticle)
+	r.DELETE("api/v1/stock/:articleid", stock.RemoveStockFromArticle) // NO VA MAS. ESTO VA CON RABBITMQ
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(418, gin.H{
+			"error": "I'm a teapot",
+		})
+	})
 	r.Static("apidoc/", "./apidoc")
 	r.Run(":3000")
 }
