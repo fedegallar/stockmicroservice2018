@@ -11,23 +11,25 @@ import (
 //GetStockByArticleID Devuelve el stock de un articulo.
 func GetStockByArticleID(c *gin.Context) {
 	articleid := c.Param("articleid")
-	fmt.Println(articleid)
-	quantity := redisclient.GetStock(c)
-	var result struct {
-		articleid string
-		quantity  string
+	quantity, err := redisclient.GetStock(articleid)
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": "Article not found",
+		})
+		return
 	}
 	fmt.Println(quantity)
-	result.articleid = articleid
-	result.quantity = quantity
-	c.JSON(200, result)
+	c.JSON(200, gin.H{
+		"articleid": articleid,
+		"quantity":  quantity,
+	})
 }
 
 //AddStockToArticle Agrega stock a un árticulo. Si no existe, lo crea.
 func AddStockToArticle(c *gin.Context) {
 	type Article struct {
 		Articleid string `json:"articleid" binding:"required"`
-		Quantity  string `json:"quantity" binding:"required"`
+		Quantity  int    `json:"quantity" binding:"required"`
 	}
 	body := Article{}
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -36,16 +38,9 @@ func AddStockToArticle(c *gin.Context) {
 	article := article.New()
 	article.Articleid = body.Articleid
 	article.Quantity = body.Quantity
-	redisclient.AddStock(article.Articleid, article.Quantity)
-	c.JSON(200, body)
-}
-
-func RemoveStockFromArticle(c *gin.Context) {
-	articleid := c.Param("articleid")
-	quantity := c.Param("quantity")
-	c.JSON(200, gin.H{
-		"message":   "Stock removed succesfully",
-		"articleid": articleid,
-		"quantity":  quantity,
-	})
+	msg, err := redisclient.ModifyStock(article.Articleid, article.Quantity)
+	if err != nil {
+		c.JSON(404, err)
+	}
+	c.JSON(200, msg)
 }

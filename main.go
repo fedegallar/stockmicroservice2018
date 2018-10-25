@@ -68,7 +68,6 @@ func main() {
 	*
 	 */
 	r.POST("/api/v1/stock/:articleid", stock.AddStockToArticle)
-	r.DELETE("api/v1/stock/:articleid", stock.RemoveStockFromArticle) // NO VA MAS. ESTO VA CON RABBITMQ
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(418, gin.H{
 			"error": "I'm a teapot",

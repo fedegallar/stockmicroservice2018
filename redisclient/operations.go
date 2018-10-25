@@ -1,7 +1,8 @@
 package redisclient
 
 import (
-	"github.com/gin-gonic/gin"
+	"strconv"
+
 	"github.com/go-redis/redis"
 )
 
@@ -14,19 +15,44 @@ func client() *redis.Client {
 }
 
 //GetStock Trae el stock de un determinado artículo.
-func GetStock(c *gin.Context) string {
+func GetStock(articleid string) (string, error) {
 	client := client()
-	val, err := client.Get(c.Param("articleid")).Result()
+	val, err := client.Get(articleid).Result()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return val
+	return val, nil
 }
 
-//AddStock Añade stock a un articulo. Si el articulo no existe, crea uno nuevo.
-func AddStock(articleid string, quantity string) {
+//AddStock Crea un articulo con stock.
+func AddStock(articleid string, quantity int) (string, error) {
 	err := client().Set(articleid, quantity, 0).Err()
 	if err != nil {
-		panic(err)
+		return "", err
+	}
+	return "Stock added successfully!", nil
+}
+
+//ModifyStock añade stock a un articulo. Si no existe, lo crea directamente.
+func ModifyStock(articleid string, quantity int) (string, error) {
+	val, err := client().Get(articleid).Result()
+	if err == redis.Nil {
+		msg, errload := AddStock(articleid, quantity)
+		if errload != nil {
+			return "", errload
+		}
+		return msg, nil
+	} else {
+		var actualVal int
+		actualVal, err = strconv.Atoi(val)
+		if err != nil {
+			return "", err
+		}
+		quantity = quantity + actualVal
+		errset := client().Set(articleid, quantity, 0).Err()
+		if errset != nil {
+			return "", errset
+		}
+		return "Added succesfully", nil
 	}
 }
