@@ -27,6 +27,7 @@ func GetStockByArticleID(c *gin.Context) {
 
 //AddStockToArticle Agrega stock a un árticulo. Si no existe, lo crea.
 func AddStockToArticle(c *gin.Context) {
+	//Pregunta aca si ha iniciado sesión o se hace en main.
 	type Article struct {
 		Articleid string `json:"articleid" binding:"required"`
 		Quantity  int    `json:"quantity" binding:"required"`
