@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/nmarsollier/imagego/tools/env"
-	"github.com/nmarsollier/imagego/tools/errors"
 	gocache "github.com/patrickmn/go-cache"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -43,7 +42,7 @@ func Validate(token string) (*User, error) {
 
 	user, err := getRemote(token)
 	if err != nil {
-		return nil, errors.Unauthorized
+		return nil, err
 	}
 
 	// Todo bien, se agrega al cache y se retorna
@@ -56,12 +55,12 @@ func getRemote(token string) (*User, error) {
 	// Buscamos el usuario remoto
 	req, err := http.NewRequest("GET", env.Get().SecurityServerURL+"/v1/users/current", nil)
 	if err != nil {
-		return nil, errors.Unauthorized
+		return nil, err
 	}
 	req.Header.Add("Authorization", "bearer "+token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil || resp.StatusCode != 200 {
-		return nil, errors.Unauthorized
+		return nil, err
 	}
 	defer resp.Body.Close()
 
