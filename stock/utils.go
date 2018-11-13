@@ -3,6 +3,7 @@ package stock
 import (
 	"strings"
 
+	"github.com/fedegallar/stockmicroservice2018/config/errors"
 	"github.com/fedegallar/stockmicroservice2018/security"
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +11,7 @@ import (
 func getTokenHeader(c *gin.Context) (string, error) {
 	tokenString := c.GetHeader("Authorization")
 	if strings.Index(tokenString, "bearer") != 0 {
-		return "", nil
+		return "", errors.Unauthorized
 	}
 	return tokenString[:7], nil
 }

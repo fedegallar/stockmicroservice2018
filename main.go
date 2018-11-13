@@ -1,12 +1,17 @@
 package main
 
 import (
-	"github.com/fedegallar/stockmicroservice2018/stock"
 	"github.com/gin-gonic/gin"
+
+	"github.com/fedegallar/stockmicroservice2018/config/errors"
+	"github.com/fedegallar/stockmicroservice2018/rabbitmq"
+	"github.com/fedegallar/stockmicroservice2018/stock"
 )
 
 func main() {
 	r := gin.Default()
+	rabbitmq.Init()
+	rabbitmq.RemoveStock()
 	/**
 	*
 	* @api {get} /api/v1/stock/:articleid Request stock from an specific article.
@@ -69,10 +74,8 @@ func main() {
 	 */
 	r.POST("/api/v1/stock/:articleid", stock.AddStockToArticle)
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(418, gin.H{
-			"error": "I'm a teapot",
-		})
+		c.JSON(418, errors.Teapot)
 	})
 	r.Static("apidoc/", "./apidoc")
-	r.Run(":3000")
+	r.Run(":3010")
 }

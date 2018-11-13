@@ -39,20 +39,19 @@ func ModifyStock(articleid string, quantity int) (string, error) {
 	if err == redis.Nil {
 		msg, errload := AddStock(articleid, quantity)
 		if errload != nil {
-			return "", errload
+			return "", errload //DEBERIA DEVOLVER UN 500 PORQUE SE CHINGO LA BASE DE DATOS!
 		}
 		return msg, nil
-	} else {
-		var actualVal int
-		actualVal, err = strconv.Atoi(val)
-		if err != nil {
-			return "", err
-		}
-		quantity = quantity + actualVal
-		errset := client().Set(articleid, quantity, 0).Err()
-		if errset != nil {
-			return "", errset
-		}
-		return "Added succesfully", nil
 	}
+	var actualVal int
+	actualVal, err = strconv.Atoi(val)
+	if err != nil {
+		return "", err //VER AL ULTIMO COMO TIENE QUE DEVOLVER UN 400 BAD REQUEST!!!
+	}
+	quantity = quantity + actualVal
+	errset := client().Set(articleid, quantity, 0).Err()
+	if errset != nil {
+		return "", errset //DEBERIA DEVOLVER 500 TAMBIEN!!!
+	}
+	return "Added succesfully", nil
 }
