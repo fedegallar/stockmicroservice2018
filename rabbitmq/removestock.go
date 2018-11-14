@@ -6,13 +6,25 @@ import (
 	"log"
 	"time"
 
+	"github.com/fedegallar/stockmicroservice2018/redisclient"
 	"github.com/streadway/amqp"
 )
 
-//Article Es el articulo que Rabbitmq va autilizar
+//Article define un articulo
 type Article struct {
 	Articleid string `json:"articleid"`
 	Quantity  int    `json:"quantity"`
+}
+
+//Message Mensaje con todos los articulos a descontar
+type Message struct {
+	Articles []Article `json:"articles"`
+}
+
+//Object Es el articulo que Rabbitmq va autilizar
+type Object struct {
+	Type string  `json:"type"`
+	Msg  Message `json:"message"`
 }
 
 func RemoveStock() {
@@ -88,13 +100,14 @@ func RemoveStockListener() {
 	forever := make(chan bool)
 	go func() {
 		for d := range mgs {
+			newArticle := &Object{}
 			log.Println("Article recived")
-			articleContent := &Article{}
-			err = json.Unmarshal(d.Body, articleContent)
-			if err != nil {
-				panic(err)
+			err = json.Unmarshal(d.Body, newArticle)
+			for _, art := range newArticle.Msg.Articles {
+				fmt.Println(art.Articleid)
+				fmt.Println(art.Quantity * (-1))
+				redisclient.RemoveStock(art.Articleid, art.Quantity*(-1))
 			}
-			fmt.Println(articleContent.Articleid)
 		}
 	}()
 	<-forever

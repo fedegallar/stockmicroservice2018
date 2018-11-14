@@ -1,6 +1,7 @@
 package redisclient
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/go-redis/redis"
@@ -31,6 +32,25 @@ func AddStock(articleid string, quantity int) (string, error) {
 		return "", err
 	}
 	return "Stock added successfully!", nil
+}
+
+//RemoveStock Deletes stock
+func RemoveStock(articleid string, quantity int) (string, error) {
+	val, err := client().Get(articleid).Result()
+	if err == redis.Nil {
+		fmt.Println("Article id doesn't exists:", articleid)
+		return "", nil
+	}
+	var actualVal int
+	actualVal, err = strconv.Atoi(val)
+	quantity = quantity + actualVal
+	errset := client().Set(articleid, quantity, 0).Err()
+	if errset != nil {
+		fmt.Println("There was a problem removing stock:", articleid)
+		return "", nil
+	}
+	return "", nil
+
 }
 
 //ModifyStock añade stock a un articulo. Si no existe, lo crea directamente.
