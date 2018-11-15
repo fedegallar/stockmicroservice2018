@@ -40,6 +40,7 @@ func AddStockToArticle(c *gin.Context) {
 	}
 	body := Article{}
 	if err := c.ShouldBindJSON(&body); err != nil {
+		fmt.Println(err)
 		c.JSON(400, errors.BadRequest)
 		return
 	}

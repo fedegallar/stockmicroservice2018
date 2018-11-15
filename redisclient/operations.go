@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	alert "github.com/fedegallar/stockmicroservice2018/rabbitmq/alert"
+
 	"github.com/go-redis/redis"
 )
 
@@ -44,6 +46,9 @@ func RemoveStock(articleid string, quantity int) (string, error) {
 	var actualVal int
 	actualVal, err = strconv.Atoi(val)
 	quantity = quantity + actualVal
+	if quantity < 10 {
+		alert.LowStockAlert(articleid)
+	}
 	errset := client().Set(articleid, quantity, 0).Err()
 	if errset != nil {
 		fmt.Println("There was a problem removing stock:", articleid)
