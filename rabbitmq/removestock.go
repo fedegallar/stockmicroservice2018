@@ -10,6 +10,20 @@ import (
 	"github.com/streadway/amqp"
 )
 
+/**
+*
+* @api {topic} sell_flow/order_placed Remove stock from an article.
+* @apiGroup RabbitMQ GET
+* @apiVersion  1.0.0
+* @apiDescription Listen messages from order and remove stock when an order is placed.
+*
+* @apiParam {String} articleid The unique id of an article.
+* @apiParam {Number} quantity The quantity of an article.
+*
+*
+*
+ */
+
 //Article define un articulo
 type Article struct {
 	Articleid string `json:"articleid"`
@@ -96,7 +110,7 @@ func RemoveStockListener() {
 		panic(err)
 	}
 
-	fmt.Println("RabbitMQ: A la espera para remover stock")
+	fmt.Println("RabbitMQ: Remove Stock waiting...")
 	forever := make(chan bool)
 	go func() {
 		for d := range mgs {
@@ -104,8 +118,7 @@ func RemoveStockListener() {
 			log.Println("Article recived")
 			err = json.Unmarshal(d.Body, newArticle)
 			for _, art := range newArticle.Msg.Articles {
-				fmt.Println(art.Articleid)
-				fmt.Println(art.Quantity * (-1))
+				fmt.Println("Getting data: ", art.Articleid, " ", art.Quantity*(-1))
 				redisclient.RemoveStock(art.Articleid, art.Quantity*(-1))
 			}
 		}

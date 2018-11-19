@@ -61,22 +61,16 @@ func RemoveStock(articleid string, quantity int) (string, error) {
 //ModifyStock añade stock a un articulo. Si no existe, lo crea directamente.
 func ModifyStock(articleid string, quantity int) (string, error) {
 	val, err := client().Get(articleid).Result()
-	if err == redis.Nil {
+	if err == redis.Nil && val == "" {
 		msg, errload := AddStock(articleid, quantity)
 		if errload != nil {
-			return "", errload //DEBERIA DEVOLVER UN 500 PORQUE SE CHINGO LA BASE DE DATOS!
+			return "", errload
 		}
 		return msg, nil
 	}
-	var actualVal int
-	actualVal, err = strconv.Atoi(val)
-	if err != nil {
-		return "", err //VER AL ULTIMO COMO TIENE QUE DEVOLVER UN 400 BAD REQUEST!!!
-	}
-	quantity = quantity + actualVal
 	errset := client().Set(articleid, quantity, 0).Err()
 	if errset != nil {
-		return "", errset //DEBERIA DEVOLVER 500 TAMBIEN!!!
+		return "", errset
 	}
 	return "Added succesfully", nil
 }

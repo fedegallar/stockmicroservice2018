@@ -31,12 +31,12 @@ func Init() {
 }
 
 /**
- * @api {fanout} auth/logout Logout de Usuarios
+ * @api {fanout} auth/logout User logout
  * @apiGroup RabbitMQ GET
  *
- * @apiDescription Escucha de mensajes logout desde auth.
+ * @apiDescription Listen logout messages from auth.
  *
- * @apiSuccessExample {json} Mensaje
+ * @apiSuccessExample {json} Message
  *     {
  *        "type": "logout",
  *        "message": "{tokenId}"

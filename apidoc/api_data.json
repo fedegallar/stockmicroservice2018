@@ -1,5 +1,89 @@
 [
   {
+    "type": "fanout",
+    "url": "auth/logout",
+    "title": "User logout",
+    "group": "RabbitMQ_GET",
+    "description": "<p>Listen logout messages from auth.</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "Message",
+          "content": "{\n   \"type\": \"logout\",\n   \"message\": \"{tokenId}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./rabbitmq/logout.go",
+    "groupTitle": "RabbitMQ_GET",
+    "name": "FanoutAuthLogout"
+  },
+  {
+    "type": "topic",
+    "url": "sell_flow/order_placed",
+    "title": "Remove stock from an article.",
+    "group": "RabbitMQ_GET",
+    "version": "1.0.0",
+    "description": "<p>Listen messages from order and remove stock when an order is placed.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "articleid",
+            "description": "<p>The unique id of an article.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "quantity",
+            "description": "<p>The quantity of an article.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./rabbitmq/removestock.go",
+    "groupTitle": "RabbitMQ_GET",
+    "name": "TopicSell_flowOrder_placed"
+  },
+  {
+    "type": "topic",
+    "url": "stock_alert",
+    "title": "Low stock alert.",
+    "group": "RabbitMQ_POST",
+    "version": "1.0.0",
+    "description": "<p>Emits an low stock alert.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "articleid",
+            "description": "<p>The unique id of an article.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Mensaje",
+          "content": "articleid",
+          "type": "text/plain"
+        }
+      ]
+    },
+    "filename": "./rabbitmq/alert/alert.go",
+    "groupTitle": "RabbitMQ_POST",
+    "name": "TopicStock_alert"
+  },
+  {
     "type": "get",
     "url": "/api/v1/stock/:articleid",
     "title": "Request stock from an specific article.",
