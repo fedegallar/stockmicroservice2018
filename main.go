@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/fedegallar/stockmicroservice2018/config/errors"
 	"github.com/fedegallar/stockmicroservice2018/rabbitmq"
 	"github.com/fedegallar/stockmicroservice2018/stock"
 )
@@ -73,9 +72,6 @@ func main() {
 	*
 	 */
 	r.POST("/api/v1/stock/:articleid", stock.AddStockToArticle)
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(418, errors.Teapot)
-	})
 	r.Static("apidoc/", "./apidoc")
 	r.Run(":3010")
 }

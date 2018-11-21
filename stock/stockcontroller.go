@@ -14,9 +14,7 @@ func GetStockByArticleID(c *gin.Context) {
 	articleid := c.Param("articleid")
 	quantity, err := redisclient.GetStock(articleid)
 	if err != nil {
-		c.JSON(404, gin.H{
-			"error": "Article not found",
-		})
+		c.JSON(404, errors.NotFound)
 		return
 	}
 	fmt.Println(quantity)
@@ -31,7 +29,7 @@ func AddStockToArticle(c *gin.Context) {
 	//Pregunta aca si ha iniciado sesión o se hace en main.
 	err := validateAuthentication(c)
 	if err != nil {
-		c.JSON(401, err)
+		c.JSON(401, errors.Unauthorized)
 		return
 	}
 	type Article struct {
@@ -47,8 +45,6 @@ func AddStockToArticle(c *gin.Context) {
 	article := article.New()
 	article.Articleid = body.Articleid
 	article.Quantity = body.Quantity
-
-	//REVISAR ESTA PORCION. ESTA HECHO POR SI NO LO ENCUENTRA... DIRECTAMENTE AÑADE UN ARTICULO NUEVO
 	msg, err := redisclient.ModifyStock(article.Articleid, article.Quantity)
 	if err != nil {
 		c.JSON(500, errors.InternalError)
