@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/fedegallar/stockmicroservice2018/config/errors"
 	"github.com/fedegallar/stockmicroservice2018/redisclient"
 	"github.com/streadway/amqp"
 )
@@ -41,6 +42,7 @@ type Object struct {
 	Msg  Message `json:"message"`
 }
 
+//RemoveStock Keep listening for a message that removes stock.
 func RemoveStock() {
 	go func() {
 		for {
@@ -54,12 +56,14 @@ func RemoveStock() {
 func RemoveStockListener() {
 	conn, err := amqp.Dial("amqp://localhost")
 	if err != nil {
+		println(errors.ConnectionError)
 		panic(err)
 	}
 	defer conn.Close()
 
 	chn, err := conn.Channel()
 	if err != nil {
+		println(errors.ChannelError)
 		panic(err)
 	}
 	defer chn.Close()
@@ -73,6 +77,7 @@ func RemoveStockListener() {
 		nil,         // arguments
 	)
 	if err != nil {
+		println(errors.ExchangeDeclareError)
 		panic(err)
 	}
 
@@ -85,6 +90,7 @@ func RemoveStockListener() {
 		nil,     // arguments
 	)
 	if err != nil {
+		println(errors.QueueDeclareError)
 		panic(err)
 	}
 
@@ -95,6 +101,7 @@ func RemoveStockListener() {
 		false,
 		nil)
 	if err != nil {
+		println(errors.QueueBindError)
 		panic(err)
 	}
 	mgs, err := chn.Consume(
@@ -107,6 +114,7 @@ func RemoveStockListener() {
 		nil,             // args
 	)
 	if err != nil {
+		println(errors.ConsumeError)
 		panic(err)
 	}
 

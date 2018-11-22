@@ -125,7 +125,7 @@
       "examples": [
         {
           "title": "Success:",
-          "content": "{\n    \"<articleid>\" : <quantity>,\n}",
+          "content": "{\n    \"<articleid>\" : <articleid>,\n\t\t  \"quantity\" : <quantity>\n}",
           "type": "json"
         }
       ]
@@ -173,7 +173,7 @@
       "examples": [
         {
           "title": "Success:",
-          "content": "HTTP/1.1 200 Success\n{\n    \"message\":\"Article added successfully!\"\n}",
+          "content": "HTTP/1.1 200 Success\n\"Article added successfully\"",
           "type": "json"
         }
       ]
@@ -182,17 +182,17 @@
       "examples": [
         {
           "title": "BadRequest:",
-          "content": "HTTP/1.1 400 Bad Request\n{\n\t  \"error\" : \"Parameters needed\"\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\"Parameters needed\"",
           "type": "json"
         },
         {
           "title": "NotAutorized:",
-          "content": "HTTP/1.1 401 Not Autorized\n{\n\t  \"error\" : \"Not Autorized\"\n}",
+          "content": "HTTP/1.1 401 Not Autorized\n\"Not Autorized\"",
           "type": "json"
         },
         {
           "title": "ArticleNotFound:",
-          "content": "HTTP/1.1 404 Not Found\n{\n\t  \"error\" : \"Article not found\"\n}",
+          "content": "HTTP/1.1 404 Not Found\n\"Article not found\"",
           "type": "json"
         }
       ]

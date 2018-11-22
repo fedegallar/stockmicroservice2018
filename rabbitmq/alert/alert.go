@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"fmt"
 
+	"github.com/fedegallar/stockmicroservice2018/config/errors"
 	"github.com/streadway/amqp"
 )
 
@@ -23,13 +24,13 @@ import (
 func LowStockAlert(articleid string) {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
-		println("There was an error opening a connection with RabbitMQ\n", err)
+		println(errors.ConnectionError)
 		return
 	}
 	defer conn.Close()
 	ch, err := conn.Channel()
 	if err != nil {
-		println("There was an error opening a channel\n", err)
+		println(errors.ChannelError)
 		return
 	}
 	defer ch.Close()

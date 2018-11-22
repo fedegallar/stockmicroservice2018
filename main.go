@@ -25,7 +25,8 @@ func main() {
 	*
 	* @apiSuccessExample {json} Success:
 	* {
-	*     "<articleid>" : <quantity>,
+	*     "<articleid>" : <articleid>,
+		  "quantity" : <quantity>
 	* }
 	*
 	* @apiErrorExample ArticleNotFound:
@@ -34,7 +35,7 @@ func main() {
 	* {"error":"Article not found"}
 	*
 	*
-	 */
+	*/
 	r.GET("/api/v1/stock/:articleid", stock.GetStockByArticleID)
 	/**
 	*
@@ -49,26 +50,22 @@ func main() {
 	*
 	* @apiSuccessExample {json} Success:
 	* HTTP/1.1 200 Success
-	* {
-	*     "message":"Article added successfully!"
-	* }
+	* "Article added successfully"
+	*
+	*
 	* @apiErrorExample {json} BadRequest:
 	* HTTP/1.1 400 Bad Request
-	* {
-	*	  "error" : "Parameters needed"
-	* }
+	* "Parameters needed"
 	*
 	* @apiErrorExample {json} NotAutorized:
 	* HTTP/1.1 401 Not Autorized
-	* {
-	*	  "error" : "Not Autorized"
-	* }
+	* "Not Autorized"
+	*
 	*
 	* @apiErrorExample {json} ArticleNotFound:
 	* HTTP/1.1 404 Not Found
-	* {
-	*	  "error" : "Article not found"
-	* }
+	* "Article not found"
+	*
 	*
 	 */
 	r.POST("/api/v1/stock/:articleid", stock.AddStockToArticle)

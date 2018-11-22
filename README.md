@@ -119,7 +119,8 @@ Success:
 
 ```
 {
-    "<articleid>" : <quantity>,
+    "<articleid>" : <articleid>,
+		  "quantity" : <quantity>
 }
 ```
 
@@ -166,9 +167,7 @@ Success:
 
 ```
 HTTP/1.1 200 Success
-{
-    "message":"Article added successfully!"
-}
+"Article added successfully"
 ```
 
 
@@ -178,23 +177,17 @@ BadRequest:
 
 ```
 HTTP/1.1 400 Bad Request
-{
-	  "error" : "Parameters needed"
-}
+"Parameters needed"
 ```
 NotAutorized:
 
 ```
 HTTP/1.1 401 Not Autorized
-{
-	  "error" : "Not Autorized"
-}
+"Not Autorized"
 ```
 ArticleNotFound:
 
 ```
 HTTP/1.1 404 Not Found
-{
-	  "error" : "Article not found"
-}
+"Article not found"
 ```

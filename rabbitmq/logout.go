@@ -6,13 +6,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/fedegallar/stockmicroservice2018/config/errors"
 	"github.com/fedegallar/stockmicroservice2018/security"
-	"github.com/nmarsollier/imagego/tools/errors"
 	"github.com/streadway/amqp"
 )
-
-// ErrChannelNotInitialized Rabbit channel could not be initialized
-var ErrChannelNotInitialized = errors.NewCustom(400, "Channel not initialized")
 
 type message struct {
 	Type    string `json:"type"`
@@ -45,12 +42,14 @@ func Init() {
 func listenLogout() error {
 	conn, err := amqp.Dial("amqp://localhost")
 	if err != nil {
+		println(errors.ConnectionError)
 		return err
 	}
 	defer conn.Close()
 
 	chn, err := conn.Channel()
 	if err != nil {
+		println(errors.ChannelError)
 		return err
 	}
 	defer chn.Close()
@@ -65,6 +64,7 @@ func listenLogout() error {
 		nil,      // arguments
 	)
 	if err != nil {
+		println(errors.ExchangeDeclareError)
 		return err
 	}
 
@@ -77,6 +77,7 @@ func listenLogout() error {
 		nil,    // arguments
 	)
 	if err != nil {
+		println(errors.QueueDeclareError)
 		return err
 	}
 
@@ -87,6 +88,7 @@ func listenLogout() error {
 		false,
 		nil)
 	if err != nil {
+		println(errors.QueueBindError)
 		return err
 	}
 
@@ -100,6 +102,7 @@ func listenLogout() error {
 		nil,        // args
 	)
 	if err != nil {
+		println(errors.ConsumeError)
 		return err
 	}
 

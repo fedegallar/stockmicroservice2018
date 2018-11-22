@@ -26,7 +26,6 @@ func GetStockByArticleID(c *gin.Context) {
 
 //AddStockToArticle Agrega stock a un árticulo. Si no existe, lo crea.
 func AddStockToArticle(c *gin.Context) {
-	//Pregunta aca si ha iniciado sesión o se hace en main.
 	err := validateAuthentication(c)
 	if err != nil {
 		c.JSON(401, errors.Unauthorized)

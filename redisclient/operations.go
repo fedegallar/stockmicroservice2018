@@ -72,5 +72,5 @@ func ModifyStock(articleid string, quantity int) (string, error) {
 	if errset != nil {
 		return "", errset
 	}
-	return "Added succesfully", nil
+	return "Stock added succesfully", nil
 }
